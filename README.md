@@ -8,7 +8,4 @@ See my other repositories for GHC-Up, GHC and Agda on Jekyll/builder.
 
 ## Using this docker image
 
-Don't `FROM` this image directly. You don't need to. You only need a subset of the files included
-in this image in order to use `stack`.
-
-See the Dockerfile in my docker-jekyll-agda repo for the variables and files you need.
+You can `FROM` the associated docker image directly to use `stack`. It excludes the build sources.
