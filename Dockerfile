@@ -1,8 +1,12 @@
+ARG JEKYLL_BASE_IMAGE=jekyll/builder:latest
+ARG JEKYLL_GHCUP_IMAGE=ednutting/jekyll-ghcup:latest
+ARG JEKYLL_GHC_IMAGE=ednutting/jekyll-ghc:latest
+
 ###################################################
 #   Haskell stack pre-requisites
 ###################################################
 
-FROM ednutting/jekyll-ghcup AS stack-tooling
+FROM $JEKYLL_GHCUP_IMAGE AS stack-tooling
 
 ENV STACK_VERSION=2.1.3
 ENV STACK_SHA256="4e937a6ad7b5e352c5bd03aef29a753e9c4ca7e8ccc22deb5cd54019a8cf130c  stack-${STACK_VERSION}-linux-x86_64-static.tar.gz"
@@ -25,7 +29,9 @@ RUN echo "Downloading and installing stack" &&\
 #   Haskell Stack
 ###################################################
 
-FROM jekyll/builder:latest
+# Note: Give your Docker instance 4 CPUs and 8GB RAM minimum or the build may randomly fail
+
+FROM $JEKYLL_BASE_IMAGE
 
 # NOTE: 'stack --docker' needs bash + usermod/groupmod (from shadow)
 RUN apk add --no-cache bash shadow openssh-client tar curl xz
@@ -34,8 +40,8 @@ RUN apk add --no-cache bash shadow openssh-client tar curl xz
 ARG GHC_BUILD_TYPE=gmp
 ARG GHC_VERSION=8.6.5
 
-COPY --from=ednutting/jekyll-ghc /.ghcup /.ghcup
-COPY --from=ednutting/jekyll-ghc /usr/bin/ghcup /usr/bin/ghcup
+COPY --from=$JEKYLL_GHC_IMAGE /.ghcup /.ghcup
+COPY --from=$JEKYLL_GHC_IMAGE /usr/bin/ghcup /usr/bin/ghcup
 COPY --from=stack-tooling /usr/bin/stack /usr/bin/stack
 
 # Add ghcup's bin directory to the PATH so that the versions of GHC it builds

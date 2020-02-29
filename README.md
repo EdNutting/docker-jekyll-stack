@@ -9,3 +9,5 @@ See my other repositories for GHC-Up, GHC and Agda on Jekyll/builder.
 ## Using this docker image
 
 You can `FROM` the associated docker image directly to use `stack`. It excludes the build sources.
+
+Note: Give your Docker instance 4 CPUs and 8GB RAM minimum or the build may randomly fail.
